@@ -55,16 +55,35 @@ class EventsPage extends Component {
 
         const requestBody = {
             query: `
-          mutation {
-            createEvent(eventInput: {title: "${title}", description: "${description}", price: ${price}, date: "${date}"}) {
-              _id
-              title
-              description
-              date
-              price
+                mutation CreateEvent(
+                $title: String!, 
+                $description: String!, 
+                $price: Float!, 
+                $date: String!
+                )
+                {
+                    createEvent(eventInput: 
+                    {
+                        title: $title, 
+                        description: $description, 
+                        price: $price, 
+                        date: $date
+                    }
+                    ) {
+                        _id
+                        title
+                        description
+                        date
+                        price
+                    }
+                }
+            `,
+            variables: {
+                title: title,
+                description: description,
+                date: date,
+                price: price
             }
-          }
-        `
         };
 
         const token = this.context.token;
@@ -112,20 +131,20 @@ class EventsPage extends Component {
         this.setState({ isLoading: true });
         const requestBody = {
             query: `
-          query {
-            events {
-              _id
-              title
-              description
-              date
-              price
-              creator {
-                _id
-                email
-              }
-            }
-          }
-        `
+                query {
+                    events {
+                        _id
+                        title
+                        description
+                        date
+                        price
+                        creator {
+                            _id
+                            email
+                        }
+                    }
+                }
+            `
         };
 
         fetch('http://localhost:8000/graphql', {
@@ -169,14 +188,17 @@ class EventsPage extends Component {
         }
         const requestBody = {
             query: `
-          mutation {
-            bookEvent(eventId: "${this.state.selectedEvent._id}") {
-              _id
-             createdAt
-             updatedAt
+                mutation BookEvent($id: ID!){
+                    bookEvent(eventId: $id) {
+                        _id
+                        createdAt
+                        updatedAt
+                    }
+                }
+            `,
+            variables: {
+                id: this.state.selectedEvent._id
             }
-          }
-        `
         };
 
         fetch('http://localhost:8000/graphql', {

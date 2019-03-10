@@ -19,17 +19,17 @@ class BookingsPage extends Component {
         this.setState({ isLoading: true });
         const requestBody = {
             query: `
-              query {
-                bookings {
-                  _id
-                 createdAt
-                 event {
-                   _id
-                   title
-                   date
-                 }
+                query {
+                    bookings {
+                        _id
+                        createdAt
+                        event {
+                            _id
+                            title
+                            date
+                        }
+                    }
                 }
-              }
             `
         };
 
@@ -61,13 +61,16 @@ class BookingsPage extends Component {
         this.setState({ isLoading: true });
         const requestBody = {
             query: `
-              mutation {
-                cancelBooking(bookingId: "${bookingId}") {
-                    _id
-                    title
-                }
-              }
-            `
+                mutation CancelBooking($id: ID!) {
+                    cancelBooking(bookingId: $id) {
+                        _id
+                        title
+                    }
+                } 
+            `,
+            variables: {
+                id: bookingId
+            }
         };
 
         fetch('http://localhost:8000/graphql', {
